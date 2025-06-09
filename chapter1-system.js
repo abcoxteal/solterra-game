@@ -621,11 +621,11 @@ const Chapter1System = {
                 { text: "What specific protection protocols do you offer?", tone: "professional", consequence: "negotiation" },
                 { text: "How do I know this isn't another surveillance layer?", tone: "suspicious", consequence: "trust_building" }
             ],
-            confident: {
+            confident: [
                 { text: "If you're fighting surveillance, prove your legitimacy", tone: "direct", consequence: "challenge_response" },
                 { text: "My family built these networks with integrity - explain your purpose", tone: "principled", consequence: "ideological_alignment" },
                 { text: "I'm willing to listen but I won't be used", tone: "assertive", consequence: "respect_establishment" }
-            },
+            ],
             strategic: [
                 { text: "Define the specific terms and timeline", tone: "business", consequence: "formal_negotiation" },
                 { text: "What resources do you control and what capabilities do you require?", tone: "analytical", consequence: "resource_assessment" },
