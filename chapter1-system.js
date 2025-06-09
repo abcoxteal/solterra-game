@@ -625,7 +625,7 @@ const Chapter1System = {
                 { text: "If you're fighting surveillance, prove your legitimacy", tone: "direct", consequence: "challenge_response" },
                 { text: "My family built these networks with integrity - explain your purpose", tone: "principled", consequence: "ideological_alignment" },
                 { text: "I'm willing to listen but I won't be used", tone: "assertive", consequence: "respect_establishment" }
-            ],
+            ], // THIS WAS THE ERROR - MISSING CLOSING BRACKET
             strategic: [
                 { text: "Define the specific terms and timeline", tone: "business", consequence: "formal_negotiation" },
                 { text: "What resources do you control and what capabilities do you require?", tone: "analytical", consequence: "resource_assessment" },
@@ -770,334 +770,334 @@ const Chapter1System = {
                         { type: 'stats', target: 'knowledge', value: 1, description: 'Gains additional intelligence' }
                     ],
                     delayed: [
-                      { type: 'event', trigger: 'Information verification', effect: 'Blackmailer provides proof of capabilities', timeline: '24 hours' }
-                   ]
-               },
-               negotiation: {
-                   immediate: [
-                       { type: 'relationship', target: 'Echo Traders', value: 2, description: 'Methodical approach valued' },
-                       { type: 'trait', target: 'negotiator', value: 1, description: 'Develops negotiation skills' }
-                   ],
-                   delayed: [
-                       { type: 'event', trigger: 'Terms discussion', effect: 'Formal cooperation proposal', timeline: '48 hours' }
-                   ]
-               },
-               challenge_response: {
-                   immediate: [
-                       { type: 'relationship', target: 'Nullbound Coalition', value: 2, description: 'Direct challenge respected' },
-                       { type: 'stats', target: 'influence', value: 1, description: 'Gains credibility through boldness' }
-                   ],
-                   delayed: [
-                       { type: 'event', trigger: 'Legitimacy test', effect: 'Blackmailer demonstrates resistance credentials', timeline: '12 hours' }
-                   ]
-               },
-               formal_negotiation: {
-                   immediate: [
-                       { type: 'relationship', target: 'Shadow Syndicate', value: 1, description: 'Business approach acknowledged' },
-                       { type: 'stats', target: 'resources', value: 1, description: 'Strategic positioning improved' }
-                   ],
-                   delayed: [
-                       { type: 'event', trigger: 'Contract terms', effect: 'Detailed proposal with specific benefits', timeline: '36 hours' }
-                   ]
-               }
-           };
+                        { type: 'event', trigger: 'Information verification', effect: 'Blackmailer provides proof of capabilities', timeline: '24 hours' }
+                    ]
+                },
+                negotiation: {
+                    immediate: [
+                        { type: 'relationship', target: 'Echo Traders', value: 2, description: 'Methodical approach valued' },
+                        { type: 'trait', target: 'negotiator', value: 1, description: 'Develops negotiation skills' }
+                    ],
+                    delayed: [
+                        { type: 'event', trigger: 'Terms discussion', effect: 'Formal cooperation proposal', timeline: '48 hours' }
+                    ]
+                },
+                challenge_response: {
+                    immediate: [
+                        { type: 'relationship', target: 'Nullbound Coalition', value: 2, description: 'Direct challenge respected' },
+                        { type: 'stats', target: 'influence', value: 1, description: 'Gains credibility through boldness' }
+                    ],
+                    delayed: [
+                        { type: 'event', trigger: 'Legitimacy test', effect: 'Blackmailer demonstrates resistance credentials', timeline: '12 hours' }
+                    ]
+                },
+                formal_negotiation: {
+                    immediate: [
+                        { type: 'relationship', target: 'Shadow Syndicate', value: 1, description: 'Business approach acknowledged' },
+                        { type: 'stats', target: 'resources', value: 1, description: 'Strategic positioning improved' }
+                    ],
+                    delayed: [
+                        { type: 'event', trigger: 'Contract terms', effect: 'Detailed proposal with specific benefits', timeline: '36 hours' }
+                    ]
+                }
+            };
 
-           return consequences[responseChoice.consequence] || {
-               immediate: [{ type: 'reputation', target: 'general', value: 0, description: 'Neutral response noted' }],
-               delayed: []
-           };
-       }
-   },
+            return consequences[responseChoice.consequence] || {
+                immediate: [{ type: 'reputation', target: 'general', value: 0, description: 'Neutral response noted' }],
+                delayed: []
+            };
+        }
+    },
 
-   // Chapter State Management
-   StateManager: {
-       async saveChapterProgress(protagonistId) {
-           const protagonist = Solterra.State.protagonists[protagonistId];
-           if (!protagonist) {
-               throw new Error('Cannot save progress: protagonist not found');
-           }
+    // Chapter State Management
+    StateManager: {
+        async saveChapterProgress(protagonistId) {
+            const protagonist = Solterra.State.protagonists[protagonistId];
+            if (!protagonist) {
+                throw new Error('Cannot save progress: protagonist not found');
+            }
 
-           // Compile chapter completion data
-           const chapterData = {
-               background: protagonist.background,
-               traits: protagonist.traits,
-               relationships: Chapter1System.state.colleagueRelationships,
-               discoveryLevel: Chapter1System.state.discoveryDepth,
-               eaiKnowledge: Chapter1System.state.eaiKnowledge,
-               choices: Chapter1System.state.choices,
-               blackmailerContact: Chapter1System.state.blackmailerContact,
-               completionTimestamp: Date.now()
-           };
+            // Compile chapter completion data
+            const chapterData = {
+                background: protagonist.background,
+                traits: protagonist.traits,
+                relationships: Chapter1System.state.colleagueRelationships,
+                discoveryLevel: Chapter1System.state.discoveryDepth,
+                eaiKnowledge: Chapter1System.state.eaiKnowledge,
+                choices: Chapter1System.state.choices,
+                blackmailerContact: Chapter1System.state.blackmailerContact,
+                completionTimestamp: Date.now()
+            };
 
-           // Store in protagonist's chapter history
-           if (!protagonist.chapterHistory) {
-               protagonist.chapterHistory = {};
-           }
-           protagonist.chapterHistory['chapter_1'] = chapterData;
+            // Store in protagonist's chapter history
+            if (!protagonist.chapterHistory) {
+                protagonist.chapterHistory = {};
+            }
+            protagonist.chapterHistory['chapter_1'] = chapterData;
 
-           // Update world state based on chapter outcomes
-           await this.updateWorldStateFromChapter(chapterData);
+            // Update world state based on chapter outcomes
+            await this.updateWorldStateFromChapter(chapterData);
 
-           // Save to persistent storage
-           Solterra.State.saveState();
+            // Save to persistent storage
+            Solterra.State.saveState();
 
-           return chapterData;
-       },
+            return chapterData;
+        },
 
-       async updateWorldStateFromChapter(chapterData) {
-           const worldState = Solterra.State.worldState;
+        async updateWorldStateFromChapter(chapterData) {
+            const worldState = Solterra.State.worldState;
 
-           // Increase EAI influence based on discovery
-           const eaiIncrease = {
-               'surface': 2,
-               'medium': 5,
-               'deep': 8
-           };
-           worldState.eaiInfluence += eaiIncrease[chapterData.discoveryLevel] || 0;
+            // Increase EAI influence based on discovery
+            const eaiIncrease = {
+                'surface': 2,
+                'medium': 5,
+                'deep': 8
+            };
+            worldState.eaiInfluence += eaiIncrease[chapterData.discoveryLevel] || 0;
 
-           // Add chapter events to world history
-           worldState.globalEvents.push({
-               type: 'surveillance_discovery',
-               region: 'Valoria',
-               discoveryLevel: chapterData.discoveryLevel,
-               protagonist: chapterData.background,
-               timestamp: chapterData.completionTimestamp
-           });
+            // Add chapter events to world history
+            worldState.globalEvents.push({
+                type: 'surveillance_discovery',
+                region: 'Valoria',
+                discoveryLevel: chapterData.discoveryLevel,
+                protagonist: chapterData.background,
+                timestamp: chapterData.completionTimestamp
+            });
 
-           // Update faction standings based on choices
-           if (chapterData.blackmailerContact) {
-               const contactType = chapterData.blackmailerContact.backgroundType;
-               const factionMappings = {
-                   'Methodical': 'Echo Traders',
-                   'Confident': 'Nullbound Coalition',
-                   'Strategic': 'Shadow Syndicate'
-               };
-               
-               const favoredFaction = factionMappings[contactType];
-               if (favoredFaction && worldState.factions[favoredFaction]) {
-                   worldState.factions[favoredFaction].playerStanding += 1;
-               }
-           }
-       },
+            // Update faction standings based on choices
+            if (chapterData.blackmailerContact) {
+                const contactType = chapterData.blackmailerContact.backgroundType;
+                const factionMappings = {
+                    'Methodical': 'Echo Traders',
+                    'Confident': 'Nullbound Coalition',
+                    'Strategic': 'Shadow Syndicate'
+                };
+                
+                const favoredFaction = factionMappings[contactType];
+                if (favoredFaction && worldState.factions[favoredFaction]) {
+                    worldState.factions[favoredFaction].playerStanding += 1;
+                }
+            }
+        },
 
-       getChapterSummary(protagonistId) {
-           const protagonist = Solterra.State.protagonists[protagonistId];
-           if (!protagonist || !protagonist.chapterHistory || !protagonist.chapterHistory.chapter_1) {
-               return null;
-           }
+        getChapterSummary(protagonistId) {
+            const protagonist = Solterra.State.protagonists[protagonistId];
+            if (!protagonist || !protagonist.chapterHistory || !protagonist.chapterHistory.chapter_1) {
+                return null;
+            }
 
-           const chapterData = protagonist.chapterHistory.chapter_1;
-           return {
-               backgroundEstablished: chapterData.background,
-               traitsAcquired: chapterData.traits.length,
-               relationshipsFormed: Object.keys(chapterData.relationships).length,
-               discoveryDepth: chapterData.discoveryLevel,
-               eaiKnowledgeGained: Object.keys(chapterData.eaiKnowledge).length,
-               choicesMade: chapterData.choices.length,
-               blackmailerContactMade: !!chapterData.blackmailerContact,
-               totalPlaytime: this.calculatePlaytime(chapterData.choices),
-               keyMoments: this.identifyKeyMoments(chapterData)
-           };
-       },
+            const chapterData = protagonist.chapterHistory.chapter_1;
+            return {
+                backgroundEstablished: chapterData.background,
+                traitsAcquired: chapterData.traits.length,
+                relationshipsFormed: Object.keys(chapterData.relationships).length,
+                discoveryDepth: chapterData.discoveryLevel,
+                eaiKnowledgeGained: Object.keys(chapterData.eaiKnowledge).length,
+                choicesMade: chapterData.choices.length,
+                blackmailerContactMade: !!chapterData.blackmailerContact,
+                totalPlaytime: this.calculatePlaytime(chapterData.choices),
+                keyMoments: this.identifyKeyMoments(chapterData)
+            };
+        },
 
-       calculatePlaytime(choices) {
-           if (choices.length < 2) return 0;
-           const startTime = choices[0].timestamp;
-           const endTime = choices[choices.length - 1].timestamp;
-           return Math.round((endTime - startTime) / 1000 / 60); // minutes
-       },
+        calculatePlaytime(choices) {
+            if (choices.length < 2) return 0;
+            const startTime = choices[0].timestamp;
+            const endTime = choices[choices.length - 1].timestamp;
+            return Math.round((endTime - startTime) / 1000 / 60); // minutes
+        },
 
-       identifyKeyMoments(chapterData) {
-           const moments = [];
-           
-           // Background establishment
-           if (chapterData.background !== 'Unknown') {
-               moments.push(`Established as ${chapterData.background} specialist`);
-           }
-           
-           // Discovery significance
-           const discoveryMoments = {
-               'surface': 'Discovered surveillance exists',
-               'medium': 'Uncovered colleague targeting',
-               'deep': 'Revealed full EAI scope'
-           };
-           if (discoveryMoments[chapterData.discoveryLevel]) {
-               moments.push(discoveryMoments[chapterData.discoveryLevel]);
-           }
-           
-           // Contact made
-           if (chapterData.blackmailerContact) {
-               moments.push('Made contact with underground network');
-           }
-           
-           return moments;
-       }
-   },
+        identifyKeyMoments(chapterData) {
+            const moments = [];
+            
+            // Background establishment
+            if (chapterData.background !== 'Unknown') {
+                moments.push(`Established as ${chapterData.background} specialist`);
+            }
+            
+            // Discovery significance
+            const discoveryMoments = {
+                'surface': 'Discovered surveillance exists',
+                'medium': 'Uncovered colleague targeting',
+                'deep': 'Revealed full EAI scope'
+            };
+            if (discoveryMoments[chapterData.discoveryLevel]) {
+                moments.push(discoveryMoments[chapterData.discoveryLevel]);
+            }
+            
+            // Contact made
+            if (chapterData.blackmailerContact) {
+                moments.push('Made contact with underground network');
+            }
+            
+            return moments;
+        }
+    },
 
-   // Main Chapter Control
-   async startChapter(protagonistId) {
-       // Initialize chapter state
-       this.state = {
-           currentScene: 'morning_arrival',
-           backgroundScore: { Methodical: 0, Confident: 0, Strategic: 0 },
-           colleagueRelationships: {},
-           discoveryDepth: 'none',
-           eaiKnowledge: {},
-           choices: [],
-           timeElapsed: 0
-       };
+    // Main Chapter Control
+    async startChapter(protagonistId) {
+        // Initialize chapter state
+        this.state = {
+            currentScene: 'morning_arrival',
+            backgroundScore: { Methodical: 0, Confident: 0, Strategic: 0 },
+            colleagueRelationships: {},
+            discoveryDepth: 'none',
+            eaiKnowledge: {},
+            choices: [],
+            timeElapsed: 0
+        };
 
-       // Ensure protagonist exists
-       const protagonist = Solterra.State.protagonists[protagonistId];
-       if (!protagonist) {
-           throw new Error('Protagonist not found for Chapter 1');
-       }
+        // Ensure protagonist exists
+        const protagonist = Solterra.State.protagonists[protagonistId];
+        if (!protagonist) {
+            throw new Error('Protagonist not found for Chapter 1');
+        }
 
-       // Set chapter context
-       protagonist.chapter = 1;
-       Solterra.State.currentChapter = 1;
-       Solterra.State.currentProtagonist = protagonistId;
+        // Set chapter context
+        protagonist.chapter = 1;
+        Solterra.State.currentChapter = 1;
+        Solterra.State.currentProtagonist = protagonistId;
 
-       return this.SceneManager.getCurrentScene();
-   },
+        return this.SceneManager.getCurrentScene();
+    },
 
-   async processSceneChoice(sceneId, choiceType, choiceValue, protagonistId) {
-       // Process the choice through appropriate system
-       let consequences;
-       
-       switch (sceneId) {
-           case 'morning_arrival':
-           case 'workplace_dynamics':
-               consequences = await this.BackgroundSystem.processChoice(choiceType, choiceValue, protagonistId);
-               break;
-               
-           case 'technical_investigation':
-               if (choiceType === 'discovery_approach') {
-                   consequences = await this.DiscoverySystem.processDiscovery(choiceValue, protagonistId);
-               } else {
-                   consequences = await this.BackgroundSystem.processChoice(choiceType, choiceValue, protagonistId);
-               }
-               break;
-               
-           case 'processing_paranoia':
-               consequences = await this.BackgroundSystem.processChoice(choiceType, choiceValue, protagonistId);
-               break;
-               
-           case 'blackmailer_contact':
-               if (choiceType === 'initial_contact') {
-                   const protagonist = Solterra.State.protagonists[protagonistId];
-                   consequences = await this.ContactSystem.generateContact(
-                       this.state.discoveryDepth,
-                       protagonist.background,
-                       protagonistId
-                   );
-               } else {
-                   consequences = await this.ContactSystem.processResponse(choiceValue, protagonistId);
-               }
-               break;
-               
-           default:
-               consequences = await this.BackgroundSystem.processChoice(choiceType, choiceValue, protagonistId);
-       }
+    async processSceneChoice(sceneId, choiceType, choiceValue, protagonistId) {
+        // Process the choice through appropriate system
+        let consequences;
+        
+        switch (sceneId) {
+            case 'morning_arrival':
+            case 'workplace_dynamics':
+                consequences = await this.BackgroundSystem.processChoice(choiceType, choiceValue, protagonistId);
+                break;
+                
+            case 'technical_investigation':
+                if (choiceType === 'discovery_approach') {
+                    consequences = await this.DiscoverySystem.processDiscovery(choiceValue, protagonistId);
+                } else {
+                    consequences = await this.BackgroundSystem.processChoice(choiceType, choiceValue, protagonistId);
+                }
+                break;
+                
+            case 'processing_paranoia':
+                consequences = await this.BackgroundSystem.processChoice(choiceType, choiceValue, protagonistId);
+                break;
+                
+            case 'blackmailer_contact':
+                if (choiceType === 'initial_contact') {
+                    const protagonist = Solterra.State.protagonists[protagonistId];
+                    consequences = await this.ContactSystem.generateContact(
+                        this.state.discoveryDepth,
+                        protagonist.background,
+                        protagonistId
+                    );
+                } else {
+                    consequences = await this.ContactSystem.processResponse(choiceValue, protagonistId);
+                }
+                break;
+                
+            default:
+                consequences = await this.BackgroundSystem.processChoice(choiceType, choiceValue, protagonistId);
+        }
 
-       // Apply consequences through main framework
-       if (consequences && consequences.immediate) {
-           const protagonist = Solterra.State.protagonists[protagonistId];
-           consequences.immediate.forEach(consequence => {
-               Solterra.ChoiceSystem.applyConsequence(protagonist, consequence);
-           });
-       }
+        // Apply consequences through main framework
+        if (consequences && consequences.immediate) {
+            const protagonist = Solterra.State.protagonists[protagonistId];
+            consequences.immediate.forEach(consequence => {
+                Solterra.ChoiceSystem.applyConsequence(protagonist, consequence);
+            });
+        }
 
-       // Update time and save state
-       this.state.timeElapsed += 1;
-       Solterra.State.saveState();
+        // Update time and save state
+        this.state.timeElapsed += 1;
+        Solterra.State.saveState();
 
-       return consequences;
-   },
+        return consequences;
+    },
 
-   async completeChapter(protagonistId) {
-       // Save all chapter progress
-       const chapterData = await this.StateManager.saveChapterProgress(protagonistId);
-       
-       // Generate chapter summary
-       const summary = this.StateManager.getChapterSummary(protagonistId);
-       
-       // Set up for Chapter 2
-       const protagonist = Solterra.State.protagonists[protagonistId];
-       protagonist.chapter = 2;
-       
-       return {
-           chapterData: chapterData,
-           summary: summary,
-           chapter2Setup: this.generateChapter2Setup(chapterData)
-       };
-   },
+    async completeChapter(protagonistId) {
+        // Save all chapter progress
+        const chapterData = await this.StateManager.saveChapterProgress(protagonistId);
+        
+        // Generate chapter summary
+        const summary = this.StateManager.getChapterSummary(protagonistId);
+        
+        // Set up for Chapter 2
+        const protagonist = Solterra.State.protagonists[protagonistId];
+        protagonist.chapter = 2;
+        
+        return {
+            chapterData: chapterData,
+            summary: summary,
+            chapter2Setup: this.generateChapter2Setup(chapterData)
+        };
+    },
 
-   generateChapter2Setup(chapterData) {
-       // Determine Chapter 2 starting scenario based on Chapter 1 choices
-       const scenarios = {
-           methodical_medium_cooperation: {
-               title: 'The Careful Alliance',
-               description: 'Working with underground contacts while maintaining professional cover',
-               startingLocation: 'ACN workplace with underground communication',
-               availableOptions: ['continue_surveillance', 'expand_network', 'protect_colleagues']
-           },
-           confident_deep_resistance: {
-               title: 'The Bold Resistance',
-               description: 'Active resistance operations with full underground integration',
-               startingLocation: 'Underground safe house',
-               availableOptions: ['sabotage_operations', 'recruit_colleagues', 'expose_eai']
-           },
-           strategic_surface_negotiation: {
-               title: 'The Strategic Approach',
-               description: 'Playing multiple sides while gathering intelligence',
-               startingLocation: 'Public location with multiple contacts',
-               availableOptions: ['information_brokering', 'advancement_opportunities', 'risk_management']
-           }
-       };
+    generateChapter2Setup(chapterData) {
+        // Determine Chapter 2 starting scenario based on Chapter 1 choices
+        const scenarios = {
+            methodical_medium_cooperation: {
+                title: 'The Careful Alliance',
+                description: 'Working with underground contacts while maintaining professional cover',
+                startingLocation: 'ACN workplace with underground communication',
+                availableOptions: ['continue_surveillance', 'expand_network', 'protect_colleagues']
+            },
+            confident_deep_resistance: {
+                title: 'The Bold Resistance',
+                description: 'Active resistance operations with full underground integration',
+                startingLocation: 'Underground safe house',
+                availableOptions: ['sabotage_operations', 'recruit_colleagues', 'expose_eai']
+            },
+            strategic_surface_negotiation: {
+                title: 'The Strategic Approach',
+                description: 'Playing multiple sides while gathering intelligence',
+                startingLocation: 'Public location with multiple contacts',
+                availableOptions: ['information_brokering', 'advancement_opportunities', 'risk_management']
+            }
+        };
 
-       // Select scenario based on chapter data
-       const scenarioKey = `${chapterData.background.toLowerCase()}_${chapterData.discoveryLevel}_${chapterData.blackmailerContact ? 'cooperation' : 'independence'}`;
-       
-       return scenarios[scenarioKey] || scenarios.methodical_medium_cooperation;
-   },
+        // Select scenario based on chapter data
+        const scenarioKey = `${chapterData.background.toLowerCase()}_${chapterData.discoveryLevel}_${chapterData.blackmailerContact ? 'cooperation' : 'independence'}`;
+        
+        return scenarios[scenarioKey] || scenarios.methodical_medium_cooperation;
+    },
 
-   // Utility functions
-   getCurrentStatus() {
-       return {
-           version: this.version,
-           currentScene: this.state.currentScene,
-           backgroundScores: this.state.backgroundScore,
-           discoveryLevel: this.state.discoveryDepth,
-           choiceCount: this.state.choices.length,
-           timeElapsed: this.state.timeElapsed,
-           relationships: this.state.colleagueRelationships
-       };
-   },
+    // Utility functions
+    getCurrentStatus() {
+        return {
+            version: this.version,
+            currentScene: this.state.currentScene,
+            backgroundScores: this.state.backgroundScore,
+            discoveryLevel: this.state.discoveryDepth,
+            choiceCount: this.state.choices.length,
+            timeElapsed: this.state.timeElapsed,
+            relationships: this.state.colleagueRelationships
+        };
+    },
 
-   reset() {
-       this.state = {
-           currentScene: 'morning_arrival',
-           backgroundScore: { Methodical: 0, Confident: 0, Strategic: 0 },
-           colleagueRelationships: {},
-           discoveryDepth: 'none',
-           eaiKnowledge: {},
-           choices: [],
-           timeElapsed: 0
-       };
-   }
+    reset() {
+        this.state = {
+            currentScene: 'morning_arrival',
+            backgroundScore: { Methodical: 0, Confident: 0, Strategic: 0 },
+            colleagueRelationships: {},
+            discoveryDepth: 'none',
+            eaiKnowledge: {},
+            choices: [],
+            timeElapsed: 0
+        };
+    }
 };
 
 // Export for both Node.js and browser environments
 if (typeof module !== 'undefined' && module.exports) {
-   module.exports = Chapter1System;
+    module.exports = Chapter1System;
 } else if (typeof window !== 'undefined') {
-   window.Chapter1System = Chapter1System;
+    window.Chapter1System = Chapter1System;
 }
 
 // Integration with Solterra framework
 if (typeof Solterra !== 'undefined') {
-   Solterra.Chapter1System = Chapter1System;
+    Solterra.Chapter1System = Chapter1System;
 }
 
 console.log('✅ Chapter 1 System Generated Successfully!');
@@ -1110,4 +1110,3 @@ console.log('  - Dynamic blackmailer contact system');
 console.log('  - Full integration with Solterra framework');
 console.log('  - Chapter completion and Chapter 2 setup');
 console.log('🎮 Ready for gameplay testing!');
-
