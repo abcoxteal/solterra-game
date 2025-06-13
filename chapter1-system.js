@@ -1099,6 +1099,16 @@ if (typeof module !== 'undefined' && module.exports) {
 if (typeof Solterra !== 'undefined') {
     Solterra.Chapter1System = Chapter1System;
 }
+if (typeof window !== 'undefined') {
+    window.Chapter1System = Chapter1System;
+    
+    // Also attach to Solterra if available
+    if (typeof Solterra !== 'undefined') {
+        Solterra.Chapter1System = Chapter1System;
+    }
+    
+    console.log('✅ Chapter1System exposed globally');
+}
 
 console.log('✅ Chapter 1 System Generated Successfully!');
 console.log('📊 System includes:');
